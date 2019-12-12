@@ -13,6 +13,37 @@ class ControllerCatalogProfile extends Controller {
 	}
 
 	protected function getList() {
+		if (isset($this->request->get['sort'])) {
+			$sort = $this->request->get['sort'];
+		} else {
+			$sort = 'p.sort_order';
+		}
+
+		if (isset($this->request->get['order'])) {
+			$order = $this->request->get['order'];
+		} else {
+			$order = 'ASC';
+		}
+
+		if (isset($this->request->get['page'])) {
+			$page = (int)$this->request->get['page'];
+		} else {
+			$page = 1;
+		}
+
+		$url = '';
+
+		if (isset($this->request->get['sort'])) {
+			$url .= '&sort=' . $this->request->get['sort'];
+		}
+
+		if (isset($this->request->get['order'])) {
+			$url .= '&order=' . $this->request->get['order'];
+		}
+
+		if (isset($this->request->get['page'])) {
+			$url .= '&page=' . $this->request->get['page'];
+		}
 
 		$this->data['breadcrumbs'] = array();
 
@@ -40,20 +71,29 @@ class ControllerCatalogProfile extends Controller {
 
 		$this->data['profiles'] = array();
 
-		$profiles = $this->model_catalog_profile->getProfiles();
+		$data = array(
+			'sort'  => $sort,
+			'order' => $order,
+			'start' => ($page - 1) * $this->config->get('config_admin_limit'),
+			'limit' => $this->config->get('config_admin_limit')
+		);
 
-		foreach ($profiles as $profile) {
+		$profile_total = $this->model_catalog_profile->getTotalProfiles();
+
+		$results = $this->model_catalog_profile->getProfiles($data);
+
+		foreach ($results as $result) {
 			$action = array();
 
 			$action[] = array(
-				'href' => $this->url->link('catalog/profile/update', 'token=' . $this->session->data['token'] . '&profile_id=' . $profile['profile_id'], 'SSL'),
+				'href' => $this->url->link('catalog/profile/update', 'token=' . $this->session->data['token'] . '&profile_id=' . $result['profile_id'], 'SSL'),
 				'name' => $this->language->get('text_edit'),
 			);
 
 			$this->data['profiles'][] = array(
-				'profile_id' => $profile['profile_id'],
-				'name' => $profile['name'],
-				'sort_order' => $profile['sort_order'],
+				'profile_id' => $result['profile_id'],
+				'name' => $result['name'],
+				'sort_order' => $result['sort_order'],
 				'action' => $action,
 			);
 		}
@@ -76,7 +116,18 @@ class ControllerCatalogProfile extends Controller {
 			$this->data['success'] = '';
 		}
 
-		$this->data['pagination'] = '';
+		$pagination = new Pagination();
+		$pagination->total = $profile_total;
+		$pagination->page = $page;
+		$pagination->limit = $this->config->get('config_admin_limit');
+		$pagination->url = $this->url->link('catalog/profile', 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
+
+		$this->data['pagination'] = $pagination->render();
+
+		$this->data['results'] = sprintf($this->language->get('text_pagination'), ($profile_total) ? (($page - 1) * $this->config->get('config_admin_limit')) + 1 : 0, ((($page - 1) * $this->config->get('config_admin_limit')) > ($profile_total - $this->config->get('config_admin_limit'))) ? $profile_total : ((($page - 1) * $this->config->get('config_admin_limit')) + $this->config->get('config_admin_limit')), $profile_total, ceil($profile_total / $this->config->get('config_admin_limit')));
+
+		$this->data['sort'] = $sort;
+		$this->data['order'] = $order;
 
 		$this->template = 'catalog/profile_list.tpl';
 		$this->children = array(

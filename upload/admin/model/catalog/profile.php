@@ -29,9 +29,48 @@ class ModelCatalogProfile extends Model {
 		return $profile_descriptions;
 	}
 
-	public function getProfiles() {
-		return $this->db->query("SELECT `p`.`profile_id`, `p`.`sort_order`, `pd`.`name` FROM `" . DB_PREFIX . "profile` AS `p` JOIN `" . DB_PREFIX . "profile_description` AS `pd` ON `pd`.`profile_id` = `p`.`profile_id` AND `pd`.`language_id` = " . (int)$this->config->get('config_language_id') . " ORDER BY p.sort_order ASC
-		")->rows;
+	public function getProfiles($data = array()) {
+		//$sql = "SELECT r.review_id, pd.name, r.author, r.rating, r.status, r.date_added FROM " . DB_PREFIX . "review r LEFT JOIN " . DB_PREFIX . "product_description pd ON (r.product_id = pd.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+		$sql = "SELECT p.profile_id, p.sort_order, pd.name FROM " . DB_PREFIX . "profile AS p LEFT JOIN " . DB_PREFIX . "profile_description pd ON (pd.profile_id = p.profile_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+
+		$sort_data = array(
+			'p.sort_order',
+			'pd.name'
+		);	
+
+		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
+			$sql .= " ORDER BY " . $data['sort'];	
+		} else {
+			$sql .= " ORDER BY p.sort_order";	
+		}
+
+		if (isset($data['order']) && ($data['order'] == 'DESC')) {
+			$sql .= " DESC";
+		} else {
+			$sql .= " ASC";
+		}
+
+		if (isset($data['start']) || isset($data['limit'])) {
+			if ($data['start'] < 0) {
+				$data['start'] = 0;
+			}			
+
+			if ($data['limit'] < 1) {
+				$data['limit'] = 20;
+			}	
+
+			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
+		}																																							  
+
+		$query = $this->db->query($sql);																																				
+
+		return $query->rows;	
+	}
+
+	public function getTotalProfiles() {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "profile");
+
+		return $query->row['total'];
 	}
 
 	public function addProfile($data) {
