@@ -22,8 +22,16 @@
           <thead>
             <tr>
               <td width="1" style="text-align: center;"><input type="checkbox" onclick="$('input[name*=\'selected\']').attr('checked', this.checked);" /></td>
-              <td class="left"><?php echo $column_name; ?></td>
-              <td class="right"><?php echo $column_sort_order; ?></td>
+              <td class="left"><?php if ($sort == 'name') { ?>
+                <a href="<?php echo $sort_name; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_name; ?></a>
+                <?php } else { ?>
+                <a href="<?php echo $sort_name; ?>"><?php echo $column_name; ?></a>
+                <?php } ?></td>
+              <td class="right"><?php if ($sort == 'sort_order') { ?>
+                <a href="<?php echo $sort_sort_order; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_sort_order; ?></a>
+                <?php } else { ?>
+                <a href="<?php echo $sort_sort_order; ?>"><?php echo $column_sort_order; ?></a>
+                <?php } ?></td>
               <td class="right"><?php echo $column_action; ?></td>
             </tr>
           </thead>

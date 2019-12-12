@@ -1,5 +1,5 @@
 <?php 
-class ControllerCatalogCategory extends Controller { 
+class ControllerCatalogCategory extends Controller {
 	private $error = array();
 
 	public function index() {
@@ -26,6 +26,14 @@ class ControllerCatalogCategory extends Controller {
 
 			$url = '';
 
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
 			if (isset($this->request->get['page'])) {
 				$url .= '&page=' . $this->request->get['page'];
 			}
@@ -49,6 +57,14 @@ class ControllerCatalogCategory extends Controller {
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$url = '';
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
 
 			if (isset($this->request->get['page'])) {
 				$url .= '&page=' . $this->request->get['page'];
@@ -76,6 +92,14 @@ class ControllerCatalogCategory extends Controller {
 
 			$url = '';
 
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
 			if (isset($this->request->get['page'])) {
 				$url .= '&page=' . $this->request->get['page'];
 			}
@@ -98,13 +122,39 @@ class ControllerCatalogCategory extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
+			$url = '';
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
 			$this->redirect($this->url->link('catalog/category', 'token=' . $this->session->data['token'], 'SSL'));
 		}
 
-		$this->getList();	
+		$this->getList();
 	}
 
 	protected function getList() {
+		if (isset($this->request->get['sort'])) {
+			$sort = $this->request->get['sort'];
+		} else {
+			$sort = 'name';
+		}
+
+		if (isset($this->request->get['order'])) {
+			$order = $this->request->get['order'];
+		} else {
+			$order = 'ASC';
+		}
+
 		if (isset($this->request->get['page'])) {
 			$page = (int)$this->request->get['page'];
 		} else {
@@ -112,6 +162,14 @@ class ControllerCatalogCategory extends Controller {
 		}
 
 		$url = '';
+
+		if (isset($this->request->get['sort'])) {
+			$url .= '&sort=' . $this->request->get['sort'];
+		}
+
+		if (isset($this->request->get['order'])) {
+			$url .= '&order=' . $this->request->get['order'];
+		}
 
 		if (isset($this->request->get['page'])) {
 			$url .= '&page=' . $this->request->get['page'];
@@ -138,6 +196,8 @@ class ControllerCatalogCategory extends Controller {
 		$this->data['categories'] = array();
 
 		$data = array(
+			'sort'  => $sort,
+			'order' => $order,
 			'start' => ($page - 1) * $this->config->get('config_admin_limit'),
 			'limit' => $this->config->get('config_admin_limit')
 		);
@@ -189,6 +249,31 @@ class ControllerCatalogCategory extends Controller {
 			$this->data['success'] = '';
 		}
 
+		$url = '';
+
+		if ($order == 'ASC') {
+			$url .= '&order=DESC';
+		} else {
+			$url .= '&order=ASC';
+		}
+
+		if (isset($this->request->get['page'])) {
+			$url .= '&page=' . $this->request->get['page'];
+		}
+
+		$this->data['sort_name'] = $this->url->link('catalog/category', 'token=' . $this->session->data['token'] . '&sort=name' . $url, 'SSL');
+		$this->data['sort_sort_order'] = $this->url->link('catalog/category', 'token=' . $this->session->data['token'] . '&sort=sort_order' . $url, 'SSL');
+
+		$url = '';
+
+		if (isset($this->request->get['sort'])) {
+			$url .= '&sort=' . $this->request->get['sort'];
+		}
+
+		if (isset($this->request->get['order'])) {
+			$url .= '&order=' . $this->request->get['order'];
+		}
+
 		$pagination = new Pagination();
 		$pagination->total = $category_total;
 		$pagination->page = $page;
@@ -198,6 +283,9 @@ class ControllerCatalogCategory extends Controller {
 		$this->data['pagination'] = $pagination->render();
 
 		$this->data['results'] = sprintf($this->language->get('text_pagination'), ($category_total) ? (($page - 1) * $this->config->get('config_admin_limit')) + 1 : 0, ((($page - 1) * $this->config->get('config_admin_limit')) > ($category_total - $this->config->get('config_admin_limit'))) ? $category_total : ((($page - 1) * $this->config->get('config_admin_limit')) + $this->config->get('config_admin_limit')), $category_total, ceil($category_total / $this->config->get('config_admin_limit')));
+
+		$this->data['sort'] = $sort;
+		$this->data['order'] = $order;
 
 		$this->template = 'catalog/category_list.tpl';
 		$this->children = array(
@@ -253,6 +341,20 @@ class ControllerCatalogCategory extends Controller {
 			$this->data['error_name'] = $this->error['name'];
 		} else {
 			$this->data['error_name'] = array();
+		}
+
+		$url = '';
+
+		if (isset($this->request->get['sort'])) {
+			$url .= '&sort=' . $this->request->get['sort'];
+		}
+
+		if (isset($this->request->get['order'])) {
+			$url .= '&order=' . $this->request->get['order'];
+		}
+
+		if (isset($this->request->get['page'])) {
+			$url .= '&page=' . $this->request->get['page'];
 		}
 
 		$this->data['breadcrumbs'] = array();
@@ -481,6 +583,8 @@ class ControllerCatalogCategory extends Controller {
 
 			$data = array(
 				'filter_name' => $this->request->get['filter_name'],
+				'sort'        => 'name',
+				'order'       => 'ASC',
 				'start'       => 0,
 				'limit'       => 20
 			);
@@ -505,6 +609,6 @@ class ControllerCatalogCategory extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
-	}		
+	}
 }
 ?>

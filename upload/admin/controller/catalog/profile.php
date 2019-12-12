@@ -13,17 +13,6 @@ class ControllerCatalogProfile extends Controller {
 	}
 
 	protected function getList() {
-		if (isset($this->request->get['sort'])) {
-			$sort = $this->request->get['sort'];
-		} else {
-			$sort = 'p.sort_order';
-		}
-
-		if (isset($this->request->get['order'])) {
-			$order = $this->request->get['order'];
-		} else {
-			$order = 'ASC';
-		}
 
 		if (isset($this->request->get['page'])) {
 			$page = (int)$this->request->get['page'];
@@ -32,18 +21,6 @@ class ControllerCatalogProfile extends Controller {
 		}
 
 		$url = '';
-
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
-		}
-
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
-
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $this->request->get['page'];
-		}
 
 		$this->data['breadcrumbs'] = array();
 
@@ -72,8 +49,6 @@ class ControllerCatalogProfile extends Controller {
 		$this->data['profiles'] = array();
 
 		$data = array(
-			'sort'  => $sort,
-			'order' => $order,
 			'start' => ($page - 1) * $this->config->get('config_admin_limit'),
 			'limit' => $this->config->get('config_admin_limit')
 		);
@@ -125,9 +100,6 @@ class ControllerCatalogProfile extends Controller {
 		$this->data['pagination'] = $pagination->render();
 
 		$this->data['results'] = sprintf($this->language->get('text_pagination'), ($profile_total) ? (($page - 1) * $this->config->get('config_admin_limit')) + 1 : 0, ((($page - 1) * $this->config->get('config_admin_limit')) > ($profile_total - $this->config->get('config_admin_limit'))) ? $profile_total : ((($page - 1) * $this->config->get('config_admin_limit')) + $this->config->get('config_admin_limit')), $profile_total, ceil($profile_total / $this->config->get('config_admin_limit')));
-
-		$this->data['sort'] = $sort;
-		$this->data['order'] = $order;
 
 		$this->template = 'catalog/profile_list.tpl';
 		$this->children = array(

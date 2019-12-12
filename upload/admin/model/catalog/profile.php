@@ -30,7 +30,6 @@ class ModelCatalogProfile extends Model {
 	}
 
 	public function getProfiles($data = array()) {
-		//$sql = "SELECT r.review_id, pd.name, r.author, r.rating, r.status, r.date_added FROM " . DB_PREFIX . "review r LEFT JOIN " . DB_PREFIX . "product_description pd ON (r.product_id = pd.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
 		$sql = "SELECT p.profile_id, p.sort_order, pd.name FROM " . DB_PREFIX . "profile AS p LEFT JOIN " . DB_PREFIX . "profile_description pd ON (pd.profile_id = p.profile_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
 
 		$sort_data = array(
