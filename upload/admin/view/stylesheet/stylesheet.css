@@ -531,6 +531,7 @@ table.form > tbody > tr > td {
 
 .row {
   margin-left: -15px;
+  margin-right: -10px;
 }
 
 .row:before, .row:after {
