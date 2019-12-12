@@ -656,16 +656,16 @@ class ControllerExtensionModification extends Controller {
 
 		$this->data['modifications'] = array();
 
-		$filter_data = array(
+		$data = array(
 			'sort'  => $sort,
 			'order' => $order,
-			'start' => ($page - 1) * $this->config->get('config_limit_admin'),
-			'limit' => $this->config->get('config_limit_admin')
+			'start' => ($page - 1) * $this->config->get('config_admin_limit'),
+			'limit' => $this->config->get('config_admin_limit')
 		);
 
 		$modification_total = $this->model_extension_modification->getTotalModifications();
 
-		$results = $this->model_extension_modification->getModifications($filter_data);
+		$results = $this->model_extension_modification->getModifications($data);
 
 		foreach ($results as $result) {
 			$this->data['modifications'][] = array(
@@ -759,7 +759,7 @@ class ControllerExtensionModification extends Controller {
 		$pagination = new Pagination();
 		$pagination->total = $modification_total;
 		$pagination->page = $page;
-		$pagination->limit = $this->config->get('config_limit_admin');
+		$pagination->limit = $this->config->get('config_admin_limit');
 		$pagination->url = $this->url->link('extension/modification', 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
 
 		$this->data['pagination'] = $pagination->render();
