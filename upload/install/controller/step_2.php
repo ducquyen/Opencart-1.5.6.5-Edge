@@ -39,8 +39,8 @@ class ControllerStep2 extends Controller {
 	}
 
 	private function validate() {
-		if (phpversion() < '5.0') {
-			$this->error['warning'] = 'Warning: You need to use PHP5 or above for OpenCart to work!';
+		if (phpversion() < '7.0.0') {
+			$this->error['warning'] = 'Warning: You need to use PHP7.0.0 or above for OpenCart to work!';
 		}
 
 		if (!ini_get('file_uploads')) {
