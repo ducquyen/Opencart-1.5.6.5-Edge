@@ -17,3 +17,5 @@ Features:
 * Sisow Payment Gateway
 * Product Option Checked
 * Full Responsive
+* Ocmod editor from IPCAM
+* Installation without FTP karapuz extension.
