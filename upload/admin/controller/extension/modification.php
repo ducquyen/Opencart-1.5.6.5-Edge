@@ -47,7 +47,13 @@ class ControllerExtensionModification extends Controller {
 				$url .= '&page=' . $this->request->get['page'];
 			}
 
+		if (isset($this->request->get['modification_editor'])) {
+			echo $this->session->data['success'];
+			exit;
+		} else {
 			$this->redirect($this->url->link('extension/modification', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+		}
+
 		}
 
 		$this->getList();
@@ -650,6 +656,7 @@ class ControllerExtensionModification extends Controller {
 			'href' => $this->url->link('extension/modification', 'token=' . $this->session->data['token'], 'SSL')
 		);
 
+		$this->data['new'] = $this->url->link('extension/modification_editor', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['refresh'] = $this->url->link('extension/modification/refresh', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['clear'] = $this->url->link('extension/modification/clear', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['delete'] = $this->url->link('extension/modification/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -669,6 +676,8 @@ class ControllerExtensionModification extends Controller {
 
 		foreach ($results as $result) {
 			$this->data['modifications'][] = array(
+				'edit'            => $this->url->link('extension/modification_editor', 'token=' . $this->session->data['token'] . '&modification_id=' . $result['modification_id'], 'SSL'),
+				'download'        => $this->url->link('extension/modification_editor/download', 'token=' . $this->session->data['token'] . '&modification_id=' . $result['modification_id'], 'SSL'),
 				'modification_id' => $result['modification_id'],
 				'name'            => $result['name'],
 				'author'          => $result['author'],
@@ -705,6 +714,12 @@ class ControllerExtensionModification extends Controller {
 
 		$this->data['tab_general'] = $this->language->get('tab_general');
 		$this->data['tab_log'] = $this->language->get('tab_log');
+
+		$this->load->language('extension/modification_editor');
+
+		$this->data['button_new'] = $this->language->get('button_new');
+		$this->data['button_edit'] = $this->language->get('button_edit');
+		$this->data['button_download'] = $this->language->get('button_download');
 
 		$this->data['token'] = $this->session->data['token'];
 

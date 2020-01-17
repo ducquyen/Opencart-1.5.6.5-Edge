@@ -10,16 +10,22 @@ class ControllerExtensionInstaller extends Controller {
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
 		$this->data['text_loading'] = $this->language->get('text_loading');
+		$this->data['text_upload_without_ftp'] = $this->language->get('text_upload_without_ftp');
 
 		$this->data['entry_upload'] = $this->language->get('entry_upload');
 		$this->data['entry_overwrite'] = $this->language->get('entry_overwrite');
 		$this->data['entry_progress'] = $this->language->get('entry_progress');
 
 		$this->data['help_upload'] = $this->language->get('help_upload');
+		$this->data['help_upload_without_ftp'] = $this->language->get('help_upload_without_ftp');
 
 		$this->data['button_upload'] = $this->language->get('button_upload');
 		$this->data['button_clear'] = $this->language->get('button_clear');
 		$this->data['button_continue'] = $this->language->get('button_continue');
+		$this->data['button_refresh'] = $this->language->get('button_refresh');
+
+		$this->data['refresh'] = $this->url->link('extension/modification/refresh', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['upload_without_ftp'] = false;
 
 		$this->document->addStyle('view/javascript/bootstrap/opencart/opencart.css');
 		$this->document->addStyle('view/javascript/font-awesome/css/font-awesome.min.css');
@@ -34,6 +40,8 @@ class ControllerExtensionInstaller extends Controller {
 			'text' => $this->language->get('heading_title'),
 			'href' => $this->url->link('extension/installer', 'token=' . $this->session->data['token'], 'SSL')
 		);
+
+
 
 		$this->data['token'] = $this->session->data['token'];
 
@@ -146,7 +154,7 @@ class ControllerExtensionInstaller extends Controller {
 						// FTP
 						$json['step'][] = array(
 							'text' => $this->language->get('text_ftp'),
-							'url'  => str_replace('&amp;', '&', $this->url->link('extension/installer/ftp', 'token=' . $this->session->data['token'], 'SSL')),
+							'url'  => str_replace('&amp;', '&', $this->url->link('extension/installer/file_tp_wrapper', 'token=' . $this->session->data['token'], 'SSL')),
 							'path' => $path
 						);
 
@@ -266,6 +274,50 @@ class ControllerExtensionInstaller extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
+	static public function cpy($source, $dest) {
+		if(is_dir($source)) {
+			$dir_handle = opendir($source);
+			while ($file = readdir($dir_handle)) {
+				if ($file != "." && $file != "..") {
+					if (is_dir($source . "/" . $file)) {
+						if (!is_dir($dest . "/" . $file)) {
+							mkdir($dest . "/" . $file);
+						}
+						self::cpy($source . "/" . $file, $dest . "/" . $file);
+					} else {
+						copy($source . "/" . $file, $dest . "/" . $file);
+					}
+				}
+			}
+			closedir($dir_handle);
+		} else {
+			copy($source, $dest);
+		}
+	}
+	
+	protected function copyUpload() {
+		$json = array();
+		
+		$directory = DIR_UPLOAD . str_replace(array('../', '..\\', '..'), '', $this->request->post['path']) . '/upload/';
+
+		if (!is_dir($directory)) {
+			$json['error'] = $this->language->get('error_directory');
+			return $json;
+		}
+
+		self::cpy($directory, dirname(DIR_APPLICATION));
+		
+		return $json;
+	}
+	
+	/*
+		This wrapper is used because some hostings block calls to URLs containing '/ftp'. It
+		brokes installation process.
+	*/
+	public function file_tp_wrapper() {
+		return $this->ftp();
+	}
+
 	public function ftp() {
 		$this->load->language('extension/installer');
 
@@ -273,6 +325,13 @@ class ControllerExtensionInstaller extends Controller {
 
 		if (!$this->user->hasPermission('modify', 'extension/installer')) {
 			$json['error'] = $this->language->get('error_permission');
+		}
+
+		if (!empty($this->request->post['upload_without_ftp'])) {
+			$json = $this->copyUpload();
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;			
 		}
 
 		// Check FTP status
