@@ -46,7 +46,7 @@ class ControllerModuleLatest extends Controller {
 			if ($result['image']) {
 				$image = $this->model_tool_image->resize($result['image'], $setting['image_width'], $setting['image_height']);
 			} else {
-				$image = false;
+				$image = $this->model_tool_image->resize('placeholder.png', $setting['image_width'], $setting['image_height']);
 			}
 						
 			if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
