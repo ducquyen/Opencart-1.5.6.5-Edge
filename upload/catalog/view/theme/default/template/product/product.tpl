@@ -498,7 +498,7 @@ $('#button-cart').on('click', function() {
 
 				$('html, body').animate({ scrollTop: 0 }, 'slow');
 
-				$('#cart > ul').load('index.php?route=module/cart/ ul li');
+				$('#cart > ul').load('index.php?route=common/cart/ ul li');
 			}
 		}
 	});

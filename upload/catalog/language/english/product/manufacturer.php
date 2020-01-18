@@ -3,7 +3,6 @@
 $_['heading_title']     = 'Find Your Favorite Brand';
 
 // Button
---- needs to be added from here:
 $_['button_grid']        = 'Grid View';
 $_['button_list']        = 'List View';
 

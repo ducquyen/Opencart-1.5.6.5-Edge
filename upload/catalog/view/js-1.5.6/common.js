@@ -30,7 +30,7 @@ $(document).ready(function() {
 	$('#cart > .heading a').live('click', function() {
 		$('#cart').addClass('active');
 		
-		$('#cart').load('index.php?route=module/cart #cart > *');
+		$('#cart').load('index.php?route=checkout/cart #cart > *');
 		
 		$('#cart').live('mouseleave', function() {
 			$(this).removeClass('active');

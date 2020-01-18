@@ -158,15 +158,15 @@ var cart = {
 
 				if (json['success']) {
 					$('#content').parent().before('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
-					
+
 					// Need to set timeout otherwise it wont update the total
 					setTimeout(function () {
 						$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
 					}, 100);
-				
+
 					$('html, body').animate({ scrollTop: 0 }, 'slow');
 
-					$('#cart > ul').load('index.php?route=module/cart ul li');
+					$('#cart > ul').load('index.php?route=common/cart ul li');
 				}
 			}
 		});
@@ -182,7 +182,7 @@ var cart = {
 			},
 			complete: function() {
 				$('#cart > button').button('reset');
-			},			
+			},
 			success: function(json) {
 				// Need to set timeout otherwise it wont update the total
 				setTimeout(function () {
@@ -192,7 +192,7 @@ var cart = {
 				if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
 					location = 'index.php?route=checkout/cart';
 				} else {
-					$('#cart > ul').load('index.php?route=module/cart ul li');
+					$('#cart > ul').load('index.php?route=common/cart ul li');
 				}
 			}
 		});
@@ -208,17 +208,17 @@ var cart = {
 			},
 			complete: function() {
 				$('#cart > button').button('reset');
-			},			
+			},
 			success: function(json) {
 				// Need to set timeout otherwise it wont update the total
 				setTimeout(function () {
 					$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
 				}, 100);
-					
+
 				if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
 					location = 'index.php?route=checkout/cart';
 				} else {
-					$('#cart > ul').load('index.php?route=module/cart ul li');
+					$('#cart > ul').load('index.php?route=common/cart ul li');
 				}
 			}
 		});
@@ -250,7 +250,7 @@ var voucher = {
 				if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
 					location = 'index.php?route=checkout/cart';
 				} else {
-					$('#cart > ul').load('index.php?route=module/cart ul li');
+					$('#cart > ul').load('index.php?route=common/cart ul li');
 				}
 			}
 		});
@@ -364,7 +364,7 @@ $(document).delegate('.agree', 'click', function(e) {
 			$(this).on('blur', function() {
 				setTimeout(function(object) {
 					object.hide();
-				}, 200, this);				
+				}, 200, this);
 			});
 			
 			// Keydown
@@ -376,7 +376,7 @@ $(document).delegate('.agree', 'click', function(e) {
 					default:
 						this.request();
 						break;
-				}				
+				}
 			});
 			
 			// Click
@@ -424,13 +424,13 @@ $(document).delegate('.agree', 'click', function(e) {
 					for (i = 0; i < json.length; i++) {
 						this.items[json[i]['value']] = json[i];
 					}
-	
+
 					for (i = 0; i < json.length; i++) {
 						if (!json[i]['category']) {
 							html += '<li data-value="' + json[i]['value'] + '"><a href="#">' + json[i]['label'] + '</a></li>';
 						}
 					}
-	
+
 					// Get all the ones with a categories
 					var category = new Array();
 	
@@ -441,7 +441,7 @@ $(document).delegate('.agree', 'click', function(e) {
 								category[json[i]['category']]['name'] = json[i]['category'];
 								category[json[i]['category']]['item'] = new Array();
 							}
-	
+
 							category[json[i]['category']]['item'].push(json[i]);
 						}
 					}
@@ -454,13 +454,13 @@ $(document).delegate('.agree', 'click', function(e) {
 						}
 					}
 				}
-	
+
 				if (html) {
 					this.show();
 				} else {
 					this.hide();
 				}
-	
+
 				$(this).siblings('ul.dropdown-menu').html(html);
 			}
 			
