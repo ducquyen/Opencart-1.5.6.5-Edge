@@ -24,7 +24,7 @@ class ControllerCommonCurrency extends Controller {
 			$connection = 'NONSSL';
 		}
 
-		$this->data['action'] = $this->url->link('module/currency/currency', '', $connection);
+		$this->data['action'] = $this->url->link('common/currency/currency', '', $connection);
 
 		$this->data['currency_code'] = $this->currency->getCode(); 
 
