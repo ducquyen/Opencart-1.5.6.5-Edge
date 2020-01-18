@@ -492,7 +492,7 @@ class ControllerCheckoutCart extends Controller {
 			unset($this->session->data['reward']);
 
 			// Totals
-			$this->load->model('extension/extension');
+			$this->load->model('setting/extension');
 
 			$total_data = array();
 			$total = 0;
@@ -502,7 +502,7 @@ class ControllerCheckoutCart extends Controller {
 			if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
 				$sort_order = array();
 
-				$results = $this->model_extension_extension->getExtensions('total');
+				$results = $this->model_setting_extension->getExtensions('total');
 
 				foreach ($results as $key => $value) {
 					$sort_order[$key] = $this->config->get($value['code'] . '_sort_order');
