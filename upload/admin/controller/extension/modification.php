@@ -13,7 +13,7 @@ class ControllerExtensionModification extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('extension/modification');
-		$this->document->addStyle('view/javascript/bootstrap/opencart/opencart.css');
+		$this->document->addStyle('view/stylesheet/stylesheet.css');
 		$this->document->addStyle('view/javascript/font-awesome/css/font-awesome.min.css');
 
 		$this->getList();
@@ -648,12 +648,14 @@ class ControllerExtensionModification extends Controller {
 
 		$this->data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),
-			'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], 'SSL')
+			'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => false
 		);
 
 		$this->data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('extension/modification', 'token=' . $this->session->data['token'], 'SSL')
+			'href' => $this->url->link('extension/modification', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => ' :: '
 		);
 
 		$this->data['new'] = $this->url->link('extension/modification_editor', 'token=' . $this->session->data['token'] . $url, 'SSL');
