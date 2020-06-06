@@ -17,3 +17,4 @@ Features:
 * Sisow Payment Gateway
 * Product Option Checked
 * Full Responsive
+* Upgraded to work with PHP v.7.x
