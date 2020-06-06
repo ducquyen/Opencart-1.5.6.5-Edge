@@ -1,5 +1,6 @@
 # Opencart 1.5.6.5 Edge
 Full Opencart install package
+Upgraded to work with PHP v.7.x Versions
 
 Features:
 ========
