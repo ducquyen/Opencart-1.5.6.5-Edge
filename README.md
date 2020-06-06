@@ -19,3 +19,4 @@ Features:
 * Full Responsive
 * Ocmod editor from IPCAM
 * Installation without FTP karapuz extension.
+* Upgraded to work with PHP v.7.x Versions
