@@ -351,6 +351,7 @@ class Cart {
 
 		$this->data = array();
 	}
+	
 	public function remove($key) {
 		if (isset($this->session->data['cart'][$key])) {
 			unset($this->session->data['cart'][$key]);
